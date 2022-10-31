@@ -16,3 +16,9 @@ Here is my website
 knitr:: include_graphics("./Media/rabbitbrush.jpg")
 ```
 
+
+##Here's some links
+
+[About me!](https://SamIngram29.github.io/Aboutme/)
+
+[My CV](https://SamIngram29.github.io/Aboutme/)
