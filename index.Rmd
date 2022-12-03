@@ -1,12 +1,21 @@
 ---
-output: html_document
 pagetitle: Sam Ingram Project
+name: Samantha Ingram
+institution: "Botany Major - Utah Valley University"
+profilepic: 
+www: samingram29.github.io
+email: "samantha.ingram@uvu.edu"
+date: "`r format(Sys.time(), '%B %Y')`"
+aboutme: "I am a Botany major at Utah Valley University. I am interested in plant ecological research, pollinator impact on speciation events, and horticulture. I love dogs, biking, and yoga."
+output: html_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, warning= FALSE, message= FALSE)
 
 library(tidyverse)
+library(vitae)
+library(tibble)
 
 ```
 
