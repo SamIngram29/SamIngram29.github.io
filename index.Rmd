@@ -1,14 +1,20 @@
 ---
-pagetitle: Sam Ingram Project
-name: Samantha Ingram
+title: "Sam Ingram Project"
+author: "Samantha Ingram"
 institution: "Botany Major - Utah Valley University"
 profilepic: 
-www: samingram29.github.io
+www: "samingram29.github.io"
 email: "samantha.ingram@uvu.edu"
 date: "`r format(Sys.time(), '%B %Y')`"
 aboutme: "I am a Botany major at Utah Valley University. I am interested in plant ecological research, pollinator impact on speciation events, and horticulture. I love dogs, biking, and yoga."
-output: html_document
+output: 
+  cleanrmd::html_document_clean:
+    theme: water-dark
+  
+       
+     
 ---
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, warning= FALSE, message= FALSE)
@@ -19,15 +25,10 @@ library(tibble)
 
 ```
 
-Here is my website
+## [Home]()| [About Me](https://SamIngram29.github.io/Aboutme/)|[Final Project](https://SamIngram29.github.io/finalproject/)
 
 ```{r fig.align='center', fig.width=5, fig.height=5}
-knitr:: include_graphics("./Media/rabbitbrush.jpg")
+knitr:: include_graphics("./Finalproject/Media/Liamandme.JPG")
 ```
 
 
-##Here's some links
-
-[About me!](https://SamIngram29.github.io/Aboutme/)
-
-[My CV](https://SamIngram29.github.io/Aboutme/)

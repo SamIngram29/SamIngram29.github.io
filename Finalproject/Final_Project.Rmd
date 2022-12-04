@@ -1,7 +1,10 @@
 ---
 title: "Final Project"
 author: "Samantha Ingram"
-output: html_document
+output: 
+  html_document:
+  theme: darkly
+  toc: true
 ---
 ```{css, echo=FALSE}
 h1, h4 {
