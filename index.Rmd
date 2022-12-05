@@ -1,12 +1,8 @@
 ---
 title: "Sam Ingram Project"
 author: "Samantha Ingram"
-institution: "Botany Major - Utah Valley University"
-profilepic: 
-www: "samingram29.github.io"
 email: "samantha.ingram@uvu.edu"
 date: "`r format(Sys.time(), '%B %Y')`"
-aboutme: "I am a Botany major at Utah Valley University. I am interested in plant ecological research, pollinator impact on speciation events, and horticulture. I love dogs, biking, and yoga."
 output: 
   cleanrmd::html_document_clean:
     theme: water-dark
@@ -25,7 +21,7 @@ library(tibble)
 
 ```
 
-## [Home]()| [About Me](https://SamIngram29.github.io/Aboutme/)|[Final Project](https://SamIngram29.github.io/finalproject/)
+## [Home]()| [About Me](https://SamIngram29.github.io/Aboutme/)|[Final Project](https://SamIngram29.github.io/Finalproject/Final_Project.html)
 
 ```{r fig.align='center', fig.width=5, fig.height=5}
 knitr:: include_graphics("./Finalproject/Media/Liamandme.JPG")
