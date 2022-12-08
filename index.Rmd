@@ -1,15 +1,17 @@
 ---
-title: "Sam Ingram Project"
-author: "Samantha Ingram"
-email: "samantha.ingram@uvu.edu"
+title: "Samantha Ingram"
 date: "`r format(Sys.time(), '%B %Y')`"
 output: 
   cleanrmd::html_document_clean:
     theme: water-dark
-  
-       
-     
+    
 ---
+```{css, echo= FALSE}
+h1, h4.date, h2 {
+  color: white;
+  font-weight: bold;
+}
+```
 
 
 ```{r setup, include=FALSE}
@@ -21,7 +23,7 @@ library(tibble)
 
 ```
 
-## [Home]()| [About Me](https://SamIngram29.github.io/Aboutme/)|[Final Project](https://SamIngram29.github.io/Finalproject/Final_Project.html)
+## [Home]()| [About Me](https://SamIngram29.github.io/Aboutme/)|[R-Statistics](https://SamIngram29.github.io/RStats/Final_Project.html)
 
 ```{r fig.align='center', fig.width=5, fig.height=5}
 knitr:: include_graphics("./Finalproject/Media/Liamandme.JPG")

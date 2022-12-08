@@ -3,8 +3,9 @@ title: "Final Project"
 author: "Samantha Ingram"
 output: 
   html_document:
-  theme: darkly
-  toc: true
+    theme: flatly
+    toc: true
+    toc_float: true
 ---
 ```{css, echo=FALSE}
 h1, h4 {
@@ -121,35 +122,6 @@ Morph_Germ <- Morph_Germ %>%
                           TRUE ~ decid))
 
 
-library(leaflet)
-
-lat <- Morph_Germ$lat
-long <- Morph_Germ$long
-
-  
-  icons <- awesomeIcons(
-  icon = 'star',
-  iconColor = 'black',
-  library = 'ion',
-  markerColor = "green")
-  
-#map
-leaflet(options = leafletOptions(maxZoom=18)) %>%
-  addProviderTiles(provider= 'Esri.NatGeoWorldMap', group='Map') %>%
-  addProviderTiles(provider='Esri.WorldImagery', group='Satellite') %>%
-  addCircleMarkers(lng=Morph_Germ$long,
-             lat=Morph_Germ$lat,
-             label = Morph_Germ$site,
-             radius = 6,
-             color = Morph_Germ$germ_per,
-             fillColor = Morph_Germ$germ_per,
-             opacity = 1,
-             fillOpacity = 1
-             ) %>%
-  addLayersControl(baseGroups=c('Map','Satellite'),
-                   options=layersControlOptions(collapsed=FALSE)) %>%
-  addScaleBar(position='topleft') %>% 
-  addAwesomeMarkers(lng = long, lat=lat, icon=icons)
   
 
 #Plotting some things:
@@ -182,13 +154,49 @@ Running a Ttest helps to see that since the p-value is < 0.5 that the germinatio
 ## Flowering Phenology
 <br>
 
-```{r echo=FALSE, fig.align='center', fig.width=5, fig.height=5}
+```{r echo=FALSE, fig.width=5, fig.height=5}
 knitr:: include_graphics("./Media/stockdiffseedtime.jpg")
 ```
 
-Flowering phenology and germination go hand in hand. The start and end flowering time of each genotype at each site was observed and that is what the below data set is depicting.
+Flowering phenology and germination go hand in hand. 
+The map below shows each location of the 5 sites.
 <br>
-Cleaning up the phenology data set.
+<br>
+
+```{r echo=FALSE}
+library(leaflet)
+
+lat <- Morph_Germ$lat
+long <- Morph_Germ$long
+
+  
+  icons <- awesomeIcons(
+  icon = 'star',
+  iconColor = 'black',
+  library = 'ion',
+  markerColor = "green")
+  
+#map
+leaflet(options = leafletOptions(maxZoom=18)) %>%
+  addProviderTiles(provider= 'Esri.NatGeoWorldMap', group='Map') %>%
+  addProviderTiles(provider='Esri.WorldImagery', group='Satellite') %>%
+  addCircleMarkers(lng=Morph_Germ$long,
+             lat=Morph_Germ$lat,
+             label = Morph_Germ$site,
+             radius = 6,
+             color = Morph_Germ$site,
+             fillColor = Morph_Germ$site,
+             opacity = 1,
+             fillOpacity = 1
+             ) %>%
+  addLayersControl(baseGroups=c('Map','Satellite'),
+                   options=layersControlOptions(collapsed=FALSE)) %>%
+  addScaleBar(position='topleft') %>% 
+  addAwesomeMarkers(lng = long, lat=lat, icon=icons)
+```
+
+The start and end flowering time of each genotype at each site, from August 2022 through October 2022, was observed and that is what the below data set is depicting.
+<br>
 ```{r echo= FALSE}
 Phen <- read_csv("./Data/Phenology.csv")%>% clean_names() 
 Phen$flower_start <- Phen$flower_start %>% as.POSIXct(format= '%m/%d/%Y')
@@ -201,9 +209,10 @@ Messing around with the flowering start and end time for each color group.
 ```{r echo= FALSE}
 flower_diff <- Phen %>% 
   mutate(flower_time = flower_end - flower_start) %>% 
-  group_by(color) %>% 
+  group_by(color, site) %>% 
   summarize(mean_flower_time= (flower_time))
-flower_diff %>% glimpse()
+flower_diff %>% kable() %>% kable_classic() %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "responsive"))
 
 Phenology <- Phen %>% 
   mutate(flower_time = flower_end - flower_start,
@@ -211,35 +220,57 @@ Phenology <- Phen %>%
 
 #Plotting the difference in flowering time.
 Phenology%>% 
-  ggplot(aes(x=color,y=flower_time))+
-  geom_boxplot()
-
+  ggplot(aes(x=color,y=flower_time, fill= color))+
+  geom_boxplot()+
+  labs(x= "Color", y= "Flower Time", title = "Flowering Phenology of Gray and Green Genotypes")+
+  scale_fill_manual(values = c("#6b706b","#19821c"))
+  
+```
+Here we see, visually, that there is a difference in flowering time depending on the genotype of rabbitbrush. The gray genotype has a longer flowering time than the green genotype.
+<br>
+<br>
+To test if there is a high probability in seeing a difference of flowering time between the gray and green genotypes generically, a few statistical tests and models will be run.
+```{r echo=FALSE}
 #Statistical testing and modeling.
 Ttest <- t.test(Phenology$flower_time, group = Phenology$color)
 Ttest %>% glimpse()
+```
+<br>
+The p-value of 3.04 e-06 tells us that depending on the geneotype we will see a difference of flowering time between the two.
+<br>
+<br>
+Now to run a model to test if that is the actuality:
 
+```{r echo=FALSE}
 #modeling
-mod_aov <- aov(data=Phenology,
-    formula= flower_time ~color+site)
-summary(mod_aov)
-TukeyHSD(mod_aov) %>% plot
+mod_aov1 <- aov(data=Phenology,
+    formula= flower_time ~color)
+summary(mod_aov1)
 
 ```
+<br>
+In this aov model we see that flowering time isn't that significant when depending on the genotype.
+So, let's look at how genotype and location of the plants relate:
+```{r echo=FALSE}
+mod_aov2 <- aov(data=Phenology,
+    formula= flower_time ~color+site)
+summary(mod_aov2)
+TukeyHSD(mod_aov2) %>% plot
+```
+<br>
+Here we see that the flowering time is significant depending on the location that plant was in. Not necessarily the plant genotype.
 
-<br>
-<br>
-<br>
 
 ## Pollen Flow With UV Pigments as a Proxy for Pollen
 <br>
 
-```{r echo=FALSE, fig.align='center', fig.width=2, fig.height=2}
-knitr:: include_graphics("./Media/green_pig_green.jpg")
+```{r echo=FALSE, fig.width=2, fig.height=2}
+knitr:: include_graphics("./Media/green_pig_green1.jpg")
 ```
 
 Pollen flow is such an important factor to consider when studying plant and pollinator interactions.
 <br>
-**Loading and cleaning the pollen data set**
+<br>
 
 ```{r echo=FALSE}
 pollen <- read_csv("./Data/Pollen_Flow.csv") %>% clean_names()
@@ -260,6 +291,8 @@ pollen %>%
 
 ```
 <br>
+
+
 **Loading and cleaning another pollen data set with all the pigment found at each site for a duration of 40 minutes per site.**
 ```{r echo=FALSE}
 flow_count <- read_csv("./Data/Pollen_Count.csv") %>% clean_names()
@@ -271,14 +304,72 @@ flow_count <- flow_count %>% pivot_longer(cols = green_green:gray_green, names_t
 #plotting to see what it looks like:
 
 flow_count %>% 
-  ggplot(aes(x=pigment_movement, y= time_point, color= T_F))+
-  geom_boxplot()+
-  facet_wrap(~site)
+  ggplot(aes(x=pigment_movement, y= T_F, color= T_F))+
+  geom_point()
 ##I need to mess around with how to plot this data if I want to use it in my report.
 
 ```
 <br>
 <br>
+
+```{r}
+start <- 
+flow_count %>% 
+  filter(time_point == "Start" & T_F)
+
+end <- 
+  flow_count %>% 
+  filter(time_point == "End" & T_F)
+
+pig <- full_join(start,end) %>% 
+  group_by(time_point,pigment_movement) %>% 
+  summarize(N=n())
+
+library(networkD3)
+library(dplyr)
+
+links <- data.frame(
+  source= c("Start_Green","Start_Green", "Start_Gray","Start_Gray"),
+  target= c("End_Green", "End_Gray", "End_Gray", "End_Green"),
+  value=c(26,19,16,13)
+)
+
+nodes <- data.frame(
+  name=c(as.character(links$source),
+         as.character(links$target)) %>%  unique()
+)
+
+links$IDsource <- match(links$source, nodes$name)-1
+links$IDtarget <- match(links$target, nodes$name)-1
+
+my_color <- 'd3.scaleOrdinal() .domain(["Start_Green", "Start_Gray", "End_Green", "End_Gray"]) .range(["green", "grey", "green", "grey"])'
+
+p <- sankeyNetwork(Links = links, Nodes = nodes,
+                   Source = "IDsource", Target = "IDtarget",
+                   Value = "value", NodeID = "name", colourScale = my_color, 
+                   sinksRight = FALSE)
+
+
+library(htmlwidgets)
+saveWidget(p,"sankey2.html")
+
+
+
+#making a connection data frame that is a list showing where pigment started and ended for each site.
+
+
+#creating a node data frame
+
+
+#creating the connection by id since network3D donest uses names.
+
+
+#making the NETWORK
+
+#saving the widget
+
+```
+
 
 ## Pollinators
 <br>
