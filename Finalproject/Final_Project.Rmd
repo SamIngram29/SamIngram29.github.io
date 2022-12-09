@@ -268,7 +268,9 @@ Here we see that the flowering time is significant depending on the location tha
 knitr:: include_graphics("./Media/green_pig_green1.jpg")
 ```
 
-Pollen flow is such an important factor to consider when studying plant and pollinator interactions.
+Pollen flow is such an important factor to consider when studying plant and pollinator interactions. Gene flow and pollinator interaction may help to understand how new species/subspecies have evolved. 
+<br>
+The below figures shows where pollen was transfered to during the day by pollinators.
 <br>
 <br>
 
@@ -287,13 +289,11 @@ pollen <- pollen %>%
 pollen %>%
   pivot_longer(starts_with("g")) %>% 
   ggplot(aes(x=site,y=name, fill=value))+
-  geom_tile()
+  geom_tile()+
+  labs(title= "Pollen Flow Findings", x= "Site", y= "Pollen Transfer")
 
 ```
-<br>
 
-
-**Loading and cleaning another pollen data set with all the pigment found at each site for a duration of 40 minutes per site.**
 ```{r echo=FALSE}
 flow_count <- read_csv("./Data/Pollen_Count.csv") %>% clean_names()
 
@@ -301,18 +301,13 @@ flow_count <- read_csv("./Data/Pollen_Count.csv") %>% clean_names()
 
 flow_count <- flow_count %>% pivot_longer(cols = green_green:gray_green, names_to = "pigment_movement", values_to = "T_F")
 
-#plotting to see what it looks like:
-
-flow_count %>% 
-  ggplot(aes(x=pigment_movement, y= T_F, color= T_F))+
-  geom_point()
-##I need to mess around with how to plot this data if I want to use it in my report.
-
 ```
 <br>
 <br>
 
-```{r}
+```{r echo=FALSE}
+
+#creating a more specific data set to be able to make a sankey diagram to show the flow of pigments.
 start <- 
 flow_count %>% 
   filter(time_point == "Start" & T_F)
@@ -328,46 +323,40 @@ pig <- full_join(start,end) %>%
 library(networkD3)
 library(dplyr)
 
+#making a connection data frame that is a list showing where pigment started and ended for each site.
 links <- data.frame(
   source= c("Start_Green","Start_Green", "Start_Gray","Start_Gray"),
   target= c("End_Green", "End_Gray", "End_Gray", "End_Green"),
   value=c(26,19,16,13)
 )
 
+#creating a node data frame
 nodes <- data.frame(
   name=c(as.character(links$source),
          as.character(links$target)) %>%  unique()
 )
 
+#creating the connection by id since network3D doesn't uses names.
 links$IDsource <- match(links$source, nodes$name)-1
 links$IDtarget <- match(links$target, nodes$name)-1
 
+#making my color scheme
 my_color <- 'd3.scaleOrdinal() .domain(["Start_Green", "Start_Gray", "End_Green", "End_Gray"]) .range(["green", "grey", "green", "grey"])'
 
+
+#making the NETWORK
 p <- sankeyNetwork(Links = links, Nodes = nodes,
                    Source = "IDsource", Target = "IDtarget",
                    Value = "value", NodeID = "name", colourScale = my_color, 
                    sinksRight = FALSE)
 
-
+#saving the widget
 library(htmlwidgets)
 saveWidget(p,"sankey2.html")
 
-
-
-#making a connection data frame that is a list showing where pigment started and ended for each site.
-
-
-#creating a node data frame
-
-
-#creating the connection by id since network3D donest uses names.
-
-
-#making the NETWORK
-
-#saving the widget
-
+```
+```{r echo=FALSE ,out.width="100%"}
+knitr::include_url("sankey2.html", height="500px")
 ```
 
 
