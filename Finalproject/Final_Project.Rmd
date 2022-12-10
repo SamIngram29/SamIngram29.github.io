@@ -36,39 +36,18 @@ There are many factors that contribute to speciation events. Importantly in plan
 <br>
 Here is some background information about the study organism to better understand the data presented below.
 <br>
+<br>
 Rabbitbrush (*Ericameria nauseosa*) is a native perennial shrub in the Asteraceae family. Rabbitbrush has erect stems and commonly has numerous leaves. When flowers bloom in late summer and fall they are bright yellow and are in clusters. Around 21 species of rabbitbrush have been described within North America and placed in gray or green colored groups (genotypes), both of which can be deciduous or non-deciduous. Within these subspecies ranges are variable with some being very narrowly isolated but many being widely distributed with overlapping ranges (McArthur et al., 1986). Within these overlapping subspecies they are often found growing together. Despite these morphological and ecological differences little if any work has been done on the ability of pollinators to discriminate between subspecies, resulting in a significant gap in our knowledge of how these subspecies are maintained. 
 <br>
 <br>
 
 ## Morphology
 <br>
-First I will read in a csv that shows morphological measurements for each genotype of rabbitbrush at each of the 5 research sites.
+To start researching this question 5 sites were chosen across Salt Lake and Utah Counties (see the interactive map below). At each site the green and gray genotypes were identified. 
 
 ```{r echo=FALSE}
 Morpho <- read_csv("./Data/Morphology.csv") %>% clean_names() %>% rename(decid=deciduous)
-Morpho %>% 
-  kable() %>% kable_classic() %>% 
-  kable_styling(full_width = T, fixed_thead = T, bootstrap_options = c("striped", "hover", "responsive")) %>% 
-  scroll_box(width = "800px", height = "300px")
-```
-<br>
-<br>
-<br>
 
-## Seed Germination
-<br>
-
-```{r echo=FALSE, fig.width=8, fig.height=8}
-knitr:: include_graphics("./Media/germination.gif")
-
-```
-
-One important difference in many plants is the success of their seeds. Seed germination and days till germination can vary widely between plant species. These factors may cause speciation within clusters of sympatrically growing seed plants (Willis et al., 2014). Some plants will put large energy resources into their seeds, allowing for a greater percent germination of their seeds. On the other hand some plants can create more seeds with lower germination and succeed in spreading many propagules with a small but acceptable germination rate. The timing of the germination event can also play a key role in ecological separation as a delay of several weeks may cause plants with differing germination to develop differently.
-<br>
-<br>
-This data set shows germination percentages for each site and how many days it took each genotype to germinate. 
-
-```{r echo = FALSE}
 Germ <- read_csv("./Data/Germ_Data.csv") %>% clean_names()
 
 #cleaning the data set:
@@ -86,16 +65,7 @@ Germ <- Germ %>% select(-decid)
 #combing the new logical column to the whole data set.
 Germ <- Germ %>% bind_cols(decid)
 
-Germ %>% kable %>% kable_classic() %>% 
-  kable_styling(full_width = T, fixed_thead = T, bootstrap_options = c("striped", "hover", "responsive")) %>% 
-  scroll_box(width = "800px", height = "300px")
 
-```
-<br>
-<br>
-
-Now to looking at how morphological traits and germination rates relate.
-```{r echo = FALSE}
 Morph_Germ <- full_join(Germ, Morpho)
 ## Need to work on this data set
 
@@ -121,8 +91,77 @@ Morph_Germ <- Morph_Germ %>%
                           site== "Provo_Mouth" ~ TRUE,
                           TRUE ~ decid))
 
+library(leaflet)
+
+lat <- Morph_Germ$lat
+long <- Morph_Germ$long
 
   
+  icons <- awesomeIcons(
+  icon = 'star',
+  iconColor = 'black',
+  library = 'ion',
+  markerColor = "green")
+  
+#map
+leaflet(options = leafletOptions(maxZoom=18)) %>%
+  addProviderTiles(provider= 'Esri.NatGeoWorldMap', group='Map') %>%
+  addProviderTiles(provider='Esri.WorldImagery', group='Satellite') %>%
+  addCircleMarkers(lng=Morph_Germ$long,
+             lat=Morph_Germ$lat,
+             label = Morph_Germ$site,
+             radius = 6,
+             color = Morph_Germ$site,
+             fillColor = Morph_Germ$site,
+             opacity = 1,
+             fillOpacity = 1
+             ) %>%
+  addLayersControl(baseGroups=c('Map','Satellite'),
+                   options=layersControlOptions(collapsed=FALSE)) %>%
+  addScaleBar(position='topleft') %>% 
+  addAwesomeMarkers(lng = long, lat=lat, icon=icons)
+  
+```
+
+<br>
+Cuttings of each genotype where collected and pressed. Later in the lab, the corolla length, width and anther length were determined and created into the data set below.
+
+```{r echo=FALSE}
+
+Morpho %>% 
+  kable() %>% kable_classic() %>% 
+  kable_styling(full_width = T, fixed_thead = T, bootstrap_options = c("striped", "hover", "responsive")) %>% 
+  scroll_box(width = "800px", height = "300px")
+```
+<br>
+<br>
+<br>
+
+## Seed Germination
+<br>
+
+```{r echo=FALSE, fig.width=8, fig.height=8}
+knitr:: include_graphics("./Media/germination.gif")
+
+```
+
+One important difference in many plants is the success of their seeds. Seed germination and days till germination can vary widely between plant species. These factors may cause speciation within clusters of sympatrically growing seed plants (Willis et al., 2014). Some plants will put large energy resources into their seeds, allowing for a greater percent germination of their seeds. On the other hand some plants can create more seeds with lower germination and succeed in spreading many propagules with a small but acceptable germination rate. The timing of the germination event can also play a key role in ecological separation as a delay of several weeks may cause plants with differing germination to develop differently.
+<br>
+<br>
+This data set shows germination percentages for each site and how many days it took each genotype to germinate. 
+
+```{r echo = FALSE}
+
+Germ %>% kable %>% kable_classic() %>% 
+  kable_styling(full_width = T, fixed_thead = T, bootstrap_options = c("striped", "hover", "responsive")) %>% 
+  scroll_box(width = "800px", height = "300px")
+
+```
+<br>
+<br>
+
+Now to looking at how morphological traits and germination rates relate.
+```{r echo = FALSE}
 
 #Plotting some things:
 Morph_Germ %>%
@@ -159,41 +198,6 @@ knitr:: include_graphics("./Media/stockdiffseedtime.jpg")
 ```
 
 Flowering phenology and germination go hand in hand. 
-The map below shows each location of the 5 sites.
-<br>
-<br>
-
-```{r echo=FALSE}
-library(leaflet)
-
-lat <- Morph_Germ$lat
-long <- Morph_Germ$long
-
-  
-  icons <- awesomeIcons(
-  icon = 'star',
-  iconColor = 'black',
-  library = 'ion',
-  markerColor = "green")
-  
-#map
-leaflet(options = leafletOptions(maxZoom=18)) %>%
-  addProviderTiles(provider= 'Esri.NatGeoWorldMap', group='Map') %>%
-  addProviderTiles(provider='Esri.WorldImagery', group='Satellite') %>%
-  addCircleMarkers(lng=Morph_Germ$long,
-             lat=Morph_Germ$lat,
-             label = Morph_Germ$site,
-             radius = 6,
-             color = Morph_Germ$site,
-             fillColor = Morph_Germ$site,
-             opacity = 1,
-             fillOpacity = 1
-             ) %>%
-  addLayersControl(baseGroups=c('Map','Satellite'),
-                   options=layersControlOptions(collapsed=FALSE)) %>%
-  addScaleBar(position='topleft') %>% 
-  addAwesomeMarkers(lng = long, lat=lat, icon=icons)
-```
 
 The start and end flowering time of each genotype at each site, from August 2022 through October 2022, was observed and that is what the below data set is depicting.
 <br>
