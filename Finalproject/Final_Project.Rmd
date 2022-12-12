@@ -160,7 +160,8 @@ Germ %>% kable %>% kable_classic() %>%
 <br>
 <br>
 
-Now to looking at how morphological traits and germination rates relate.
+Let us look at how morphological traits and germination rates may impact each other.
+<br>
 ```{r echo = FALSE}
 
 #Plotting some things:
@@ -209,7 +210,10 @@ Phen$flower_end <- Phen$flower_end %>% as.POSIXct(format= '%m/%d/%Y')
 Phen %>% kable() %>% kable_classic()
 ```
 
-Messing around with the flowering start and end time for each color group.
+<br>
+From the above data set the mean flowering time for each color group at each location was determined. Refer to the table below for mean flowering time.
+<br>
+
 ```{r echo= FALSE}
 flower_diff <- Phen %>% 
   mutate(flower_time = flower_end - flower_start) %>% 
@@ -221,6 +225,9 @@ flower_diff %>% kable() %>% kable_classic() %>%
 Phenology <- Phen %>% 
   mutate(flower_time = flower_end - flower_start,
          flower_time= as.numeric(flower_time))
+  
+```
+```{r echo=FALSE}
 
 #Plotting the difference in flowering time.
 Phenology%>% 
@@ -228,18 +235,19 @@ Phenology%>%
   geom_boxplot()+
   labs(x= "Color", y= "Flower Time", title = "Flowering Phenology of Gray and Green Genotypes")+
   scale_fill_manual(values = c("#6b706b","#19821c"))
-  
+
 ```
-Here we see, visually, that there is a difference in flowering time depending on the genotype of rabbitbrush. The gray genotype has a longer flowering time than the green genotype.
 <br>
+Here we visually see that there is a difference in flowering time depending on the genotype of rabbitbrush. The gray genotype has a longer flowering time than the green genotype.
 <br>
-To test if there is a high probability in seeing a difference of flowering time between the gray and green genotypes generically, a few statistical tests and models will be run.
+
+To test if there is a high probability in seeing a difference of flowering time between the gray and green genotypes generally speaking, a few statistical tests and models will be run.
 ```{r echo=FALSE}
 #Statistical testing and modeling.
 Ttest <- t.test(Phenology$flower_time, group = Phenology$color)
-Ttest %>% glimpse()
+ttest <- Ttest %>% glimpse()
 ```
-<br>
+
 The p-value of 3.04 e-06 tells us that depending on the geneotype we will see a difference of flowering time between the two.
 <br>
 <br>
@@ -253,28 +261,30 @@ summary(mod_aov1)
 
 ```
 <br>
-In this aov model we see that flowering time isn't that significant when depending on the genotype.
-So, let's look at how genotype and location of the plants relate:
+In this AOV model we see that flowering time isn't that significant when depending on the genotype.
+So, let's look at how genotype and location of the plants impact each other:
 ```{r echo=FALSE}
 mod_aov2 <- aov(data=Phenology,
     formula= flower_time ~color+site)
-summary(mod_aov2)
+
 TukeyHSD(mod_aov2) %>% plot
 ```
 <br>
-Here we see that the flowering time is significant depending on the location that plant was in. Not necessarily the plant genotype.
-
+Here we see that the flowering time is significant depending on the location that plant was in. Not the plant genotype alone.
+<br>
+<br>
 
 ## Pollen Flow With UV Pigments as a Proxy for Pollen
 <br>
 
-```{r echo=FALSE, fig.width=2, fig.height=2}
+```{r echo=FALSE, out.width = "400px"}
 knitr:: include_graphics("./Media/green_pig_green1.jpg")
 ```
 
 Pollen flow is such an important factor to consider when studying plant and pollinator interactions. Gene flow and pollinator interaction may help to understand how new species/subspecies have evolved. 
 <br>
-The below figures shows where pollen was transfered to during the day by pollinators.
+<br>
+The below figures shows where pollen was transferred to during the day by pollinators.
 <br>
 <br>
 
@@ -294,7 +304,8 @@ pollen %>%
   pivot_longer(starts_with("g")) %>% 
   ggplot(aes(x=site,y=name, fill=value))+
   geom_tile()+
-  labs(title= "Pollen Flow Findings", x= "Site", y= "Pollen Transfer")
+  labs(title= "Pollen Flow Findings", x= "Site", y= "Pollen Transfer")+
+  theme(plot.title = element_text(hjust = 0.5))
 
 ```
 
@@ -308,7 +319,8 @@ flow_count <- flow_count %>% pivot_longer(cols = green_green:gray_green, names_t
 ```
 <br>
 <br>
-
+On the left side of this diagram it is showing where pigments started (either on a grey or green genotype). On the right it depicts where the pigment was found at the end of the day.
+<br>
 ```{r echo=FALSE}
 
 #creating a more specific data set to be able to make a sankey diagram to show the flow of pigments.
@@ -364,10 +376,50 @@ knitr::include_url("sankey2.html", height="500px")
 ```
 
 
-## Pollinators
 <br>
-```{r echo=FALSE, fig.align='center', fig.width=3, fig.height=3}
+<br>
+<br>
+
+## What is Next?? Pollinators!
+<br>
+```{r echo=FALSE}
+knitr::include_graphics("./Media/meresearch.jpg")
+
+```
+
+Weekly observations and insect collection were completed while rabbitbrush was in bloom at each of the 5 sites. Insect family identification is currently taking place in the lab. Stay tuned to see the results of how pollinators impact rabbitbrush!
+<br>
+<br>
+In the meantime, here are some beautiful pictures for your enjoyment!
+<br>
+
+## Photo Gallery {.tabset}
+
+### Beetle
+```{r echo=FALSE, fig.width=3, fig.height=3}
 knitr:: include_graphics("./Media/stocksoldierbeetle.jpg")
 ```
 
+### Butterfly
+```{r echo=FALSE, out.width= "400px"}
+knitr:: include_graphics("./Media/butterfly.jpg")
+```
+
+### Bee
+```{r echo=FALSE, fig.width=3, fig.height=3 }
+knitr:: include_graphics("./Media/beestock.jpg")
+
+```
+
+
+### Moth
+```{r echo=FALSE, out.width= "400px"}
+knitr:: include_graphics("./Media/moth_gray.jpg")
+```
+
+
+### Moth with pigment
+```{r echo=FALSE, out.width= "400px"}
+knitr:: include_graphics("./Media/moth_with_pig.jpg")
+```
 
