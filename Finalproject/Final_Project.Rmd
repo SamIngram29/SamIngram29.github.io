@@ -135,6 +135,23 @@ Morpho %>%
 ```
 <br>
 <br>
+
+## Morphology Gallery {.tabset}
+
+### Bluffdale Gray
+```{r echo=FALSE, out.width= "400px"}
+knitr::include_graphics("./Media/bluffgreymorph.jpg")
+
+```
+
+
+### Bluffdale Green
+```{r echo=FALSE, out.width= "400px"}
+knitr::include_graphics("./Media/bluffgreenmorph.jpg")
+
+```
+
+<br>
 <br>
 
 ## Seed Germination
