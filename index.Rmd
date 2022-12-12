@@ -23,7 +23,7 @@ library(tibble)
 
 ```
 
-## [Home]()| [About Me](https://SamIngram29.github.io/Aboutme/)|[RStats](https://SamIngram29.github.io/Final_Project.html)
+## [Home]()| [About Me](https://SamIngram29.github.io/Aboutme/)|[RStats](https://SamIngram29.github.io/Finalproject/Final_Project.html)
 
 ```{r fig.align='center', fig.width=5, fig.height=5}
 knitr:: include_graphics("./Finalproject/Media/Liamandme.JPG")
