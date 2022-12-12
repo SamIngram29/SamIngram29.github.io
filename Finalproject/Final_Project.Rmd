@@ -24,6 +24,7 @@ library(janitor)
 library(kableExtra)
 library(vegan)
 library(sp)
+library(rmarkdown)
 
 ```
 
@@ -40,6 +41,8 @@ Here is some background information about the study organism to better understan
 Rabbitbrush (*Ericameria nauseosa*) is a native perennial shrub in the Asteraceae family. Rabbitbrush has erect stems and commonly has numerous leaves. When flowers bloom in late summer and fall they are bright yellow and are in clusters. Around 21 species of rabbitbrush have been described within North America and placed in gray or green colored groups (genotypes), both of which can be deciduous or non-deciduous. Within these subspecies ranges are variable with some being very narrowly isolated but many being widely distributed with overlapping ranges (McArthur et al., 1986). Within these overlapping subspecies they are often found growing together. Despite these morphological and ecological differences little if any work has been done on the ability of pollinators to discriminate between subspecies, resulting in a significant gap in our knowledge of how these subspecies are maintained. 
 <br>
 <br>
+
+______________________________________________________________________________________________________________________________________________
 
 ## Morphology
 <br>
@@ -154,6 +157,9 @@ knitr::include_graphics("./Media/bluffgreenmorph.jpg")
 <br>
 <br>
 
+______________________________________________________________________________________________________________________________________________
+
+
 ## Seed Germination
 <br>
 
@@ -207,6 +213,8 @@ germtest %>% glimpse()
 Running a Ttest helps to see that since the p-value is < 0.5 that the germination percent and corolla length depending on the genotype of rabbitbrush is significant. There is quite a difference between the two color groups.
 <br>
 <br>
+
+______________________________________________________________________________________________________________________________________________
 
 ## Flowering Phenology
 <br>
@@ -285,11 +293,15 @@ mod_aov2 <- aov(data=Phenology,
     formula= flower_time ~color+site)
 
 TukeyHSD(mod_aov2) %>% plot
+TukeyHSD(mod_aov2)$site
+
 ```
 <br>
 Here we see that the flowering time is significant depending on the location that plant was in. Not the plant genotype alone.
 <br>
 <br>
+
+______________________________________________________________________________________________________________________________________________
 
 ## Pollen Flow With UV Pigments as a Proxy for Pollen
 <br>
@@ -396,6 +408,8 @@ knitr::include_url("sankey2.html", height="500px")
 <br>
 <br>
 <br>
+
+______________________________________________________________________________________________________________________________________________
 
 ## What is Next?? Pollinators!
 <br>
